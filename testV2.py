@@ -20,9 +20,13 @@ class Label_image(QLabel):
         pixmap = QPixmap.fromImage(image)
         self.setPixmap(pixmap)
 
+
 class MyWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.menu()
+           
+    def menu(self):
         self.centraleWidget = QWidget()
         self.setCentralWidget(self.centraleWidget)
 
@@ -45,24 +49,35 @@ class MyWindow(QMainWindow):
         self.layoutPrincipal.addLayout(self.layoutView)
         self.layoutPrincipal.addLayout(self.layoutButtons)
 
-        if self.btn_inventaire.clicked:
-            
-            self.btn_inventaire.clicked.connect(self.Reset_pour_inv)
-            self.layoutView = QHBoxLayout()
-            self.view = QGraphicsView()
-            self.layoutView.addWidget(self.view)
-            
-            self.layoutButtons = QHBoxLayout()
-            self.btn_deck = QPushButton("Deck")
 
-    def Reset_pour_inv(self):
-        self.setCentralWidget(QWidget())
+        self.btn_inventaire.clicked.connect(self.inventaire)
+
+    def inventaire(self):
+        
+        self.centraleWidget = QWidget()
+        self.setCentralWidget(self.centraleWidget)
+
+        self.layoutPrincipal = QVBoxLayout(self.centraleWidget)
+
+        self.layoutView = QHBoxLayout()
+        self.view = QGraphicsView()
+        self.layoutView.addWidget(self.view)
+
+        self.layoutButtons = QHBoxLayout()
+        self.btn_menu = QPushButton("Menu")
+
+        self.layoutButtons.addWidget(self.btn_menu)
+
+        self.layoutPrincipal.addLayout(self.layoutView)
+        self.layoutPrincipal.addLayout(self.layoutButtons)
 
 
-with open('pokedex.json', encoding="utf8") as f:
-    contenu = json.load(f)
-for i in range(15):
-    print(contenu[i]["name"]["french"])
+        self.btn_menu.clicked.connect(self.menu)
+
+#with open('pokedex.json', encoding="utf8") as f:
+#    contenu = json.load(f)
+#for i in range(15):
+#    print(contenu[i]["name"]["french"])
 
 if __name__ == "__main__":
     app = QApplication([])
