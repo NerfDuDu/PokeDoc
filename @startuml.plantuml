@@ -1,0 +1,34 @@
+@startuml
+
+actor "Utilisateur" as Utilisateur
+actor "Administrateur" as Administrateur
+
+rectangle "Fonctionnalités" {
+    (Recherche de données)
+    (Affichage des résultats)
+    (Affichage d'images)
+    (Sauvegarde de l'état)
+    (Chargement de l'état)
+    (Authentification)
+    (Accès aux fonctionnalités administratives)
+}
+
+Utilisateur --> (Recherche de données)
+Utilisateur --> (Affichage des résultats)
+Utilisateur --> (Affichage d'images)
+Utilisateur --> (Sauvegarde de l'état)
+Utilisateur --> (Chargement de l'état)
+
+Administrateur --> (Authentification)
+Administrateur --> (Accès aux fonctionnalités administratives)
+Administrateur --> (Sauvegarde de l'état) : Possibilité de sauvegarde automatique
+
+(Recherche de données) --> "Pokedex.json" : Recherche dans le fichier
+(Affichage des résultats) --> Utilisateur : Affiche les résultats sous forme de liste
+(Affichage d'images) --> "Pokedex.json" : Affiche une image
+
+(Sauvegarde de l'état) --> "Base de Données" : Sauvegarde l'état de l'utilisateur
+(Chargement de l'état) --> "Base de Données" : Charge l'état de l'utilisateur
+
+@enduml
+
