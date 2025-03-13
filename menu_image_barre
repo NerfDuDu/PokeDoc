@@ -1,0 +1,198 @@
+import json
+import os
+from PySide6.QtWidgets import (QGraphicsView, QMainWindow, QWidget, QApplication, 
+                               QHBoxLayout, QPushButton, QVBoxLayout, QLabel, 
+                               QGraphicsScene, QGraphicsPixmapItem, QGraphicsRectItem, QGridLayout, QLineEdit)
+from PySide6.QtGui import QImage, QPixmap
+from PySide6.QtCore import QUrl, Slot, Qt
+from PySide6.QtNetwork import QNetworkAccessManager, QNetworkReply, QNetworkRequest, QNetworkRequest
+
+class Scene(QGraphicsScene):
+    def __init__(self, index=0, parent=None):
+        super().__init__(parent)
+        self.index = index  # Index du Pokémon affiché
+        self.fond = QGraphicsRectItem(0, 0, 0, 0)
+        self.addItem(self.fond)
+        
+        # Charger le JSON une seule fois
+        with open(os.path.join('projet pokemon', 'pokedex.json'), encoding="utf8") as f:
+            self.contenu = json.load(f)
+        
+        self.ajoute(self.get_image())
+
+    def get_image(self):
+        return self.contenu[self.index]["image"]["thumbnail"]
+    
+    def get_type(self):
+        return self.contenu[self.index]["type"][0]
+    
+    def get_nom(self):
+        return self.contenu[self.index]["name"]["french"]
+    
+    def ajoute(self, url: str):
+        self.manager = QNetworkAccessManager(self)
+        self.manager.finished.connect(self.chargement_fini)
+        self.manager.get(QNetworkRequest(QUrl.fromUserInput(url)))
+
+    @Slot(QNetworkReply)
+    def chargement_fini(self, reponse: QNetworkReply):
+        if reponse.error() == QNetworkReply.NoError:
+            image = QImage()
+            image.loadFromData(reponse.readAll())
+            pixmap = QPixmap.fromImage(image)
+            self.pixmap_item = QGraphicsPixmapItem(pixmap)
+            self.pixmap_item.setPos(80, 60)
+            self.addItem(self.pixmap_item)
+        reponse.deleteLater()
+
+class MyWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.page_index = 0  # Page courante pour l'inventaire
+        self.total_pages = 45  # Nombre total de pages
+        
+        self.menu()
+
+    def menu(self):
+        self.centralWidget = MENUS()
+        self.setCentralWidget(self.centralWidget)
+        self.centralWidget.btn_inventaire.clicked.connect(self.inventaire)
+
+    def inventaire(self):
+        self.centralWidget = SAKA_DHO(self.page_index, self.total_pages)
+        self.setCentralWidget(self.centralWidget)
+        
+        self.centralWidget.btn_menu.clicked.connect(self.menu)
+        self.centralWidget.btn_prec.clicked.connect(self.page_precedente)
+        self.centralWidget.btn_suiv.clicked.connect(self.page_suivante)
+
+    def page_suivante(self):
+        if self.page_index < self.total_pages - 1:
+            self.page_index += 1
+            self.inventaire()
+
+    def page_precedente(self):
+        if self.page_index > 0:
+            self.page_index -= 1
+            self.inventaire()
+
+
+class SAKA_DHO(QWidget):
+    def __init__(self, page_index, total_pages, barre):
+        super().__init__()
+        self.page_index = page_index
+        self.total_pages = total_pages
+        self.barre = barre.text()
+        
+        #  Charger le une seule fois
+        with open(os.path.join('projet pokemon', 'pokedex.json'), encoding="utf8") as f:
+            self.pokedex = json.load(f)
+
+        self.layoutsakado = QVBoxLayout(self)
+        self.barre = QLineEdit(self)
+        self.barre.setPlaceholderText("Rechercher un Pokémon")
+        self.layoutsakado.addWidget(self.barre)
+
+        self.vue = QWidget()
+        self.gridlayout = QGridLayout()
+        self.vue.setLayout(self.gridlayout)
+
+        #  Créer un gestionnaire réseau pour récupérer les images en ligne
+        self.network_manager = QNetworkAccessManager(self)
+        
+        #  Génére les Pokémon20 par page
+        for i in range(5):
+            for j in range(4):
+                num = i * 4 + j + page_index * 20 
+                
+                if num < len(self.pokedex):  # Vérifier si le Pokémon existe
+                    pokemon = self.pokedex[num]
+                    name = pokemon["name"]["french"]
+                    image_url = pokemon["image"]["thumbnail"]
+
+                    #  Création d’un widget contenant l’image et le nom
+                    widget_pokemon = QWidget()
+                    layout_pokemon = QVBoxLayout(widget_pokemon)
+
+                    #  Label pour afficher l’image (sera mis à jour après le téléchargement)
+                    label_image = QLabel()
+                    label_image.setAlignment(Qt.AlignCenter)
+
+                    #  Télécharger l’image en ligne
+                    request = QNetworkRequest(QUrl(image_url))
+                    reply = self.network_manager.get(request)
+                    reply.finished.connect(lambda r=reply, l=label_image: self.charger_image(r, l))
+
+                    #  Ajouter le nom du Pokémon
+                    label_nom = QLabel(name)
+                    label_nom.setAlignment(Qt.AlignCenter)
+
+                    #  Ajouter l’image et le nom dans le layout
+                    layout_pokemon.addWidget(label_image)
+                    layout_pokemon.addWidget(label_nom)
+
+                    #  Ajouter le widget complet (image + nom) à la grille
+                    self.gridlayout.addWidget(widget_pokemon, i, j)
+
+        self.layoutsakado.addWidget(self.vue)
+
+        self.page = QLabel(str(page_index + 1))
+        self.layoutsakado.addWidget(self.page)
+
+        #  Menu de navigation (précédent / menu / suivant)
+        self.menu = QWidget()
+        self.menu.setFixedHeight(40)
+        self.layoutButtons = QHBoxLayout()
+        self.menu.setLayout(self.layoutButtons)
+
+        #  Boutons de navigation
+        self.btn_prec = QPushButton("<")
+        self.btn_prec.setEnabled(self.page_index > 0)
+        self.layoutButtons.addWidget(self.btn_prec)
+
+        self.btn_menu = QPushButton("Menu")
+        self.layoutButtons.addWidget(self.btn_menu)
+
+        self.btn_suiv = QPushButton(">")
+        self.btn_suiv.setEnabled(self.page_index < self.total_pages - 1)
+        self.layoutButtons.addWidget(self.btn_suiv)
+
+        
+
+        self.layoutsakado.addWidget(self.menu)
+
+    @Slot(QNetworkReply, QLabel)
+    def charger_image(self, reponse: QNetworkReply, label: QLabel):
+        """ Télécharge l’image et l’affiche dans le QLabel """
+        if reponse.error() == QNetworkReply.NoError:
+            image = QImage()
+            image.loadFromData(reponse.readAll())
+            pixmap = QPixmap.fromImage(image).scaled(100, 100, Qt.KeepAspectRatio)
+            label.setPixmap(pixmap)
+        reponse.deleteLater()
+
+
+class MENUS(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.layoutPrincipal = QVBoxLayout(self)
+        self.layoutView = QHBoxLayout()
+        self.view = QGraphicsView()
+        self.layoutView.addWidget(self.view)
+
+        self.layoutButtons = QHBoxLayout()
+        self.btn_inventaire = QPushButton("Inventaire")
+        self.btn_ouvrir = QPushButton("Ouvrir")
+
+        self.layoutButtons.addWidget(self.btn_ouvrir)
+        self.layoutButtons.addWidget(self.btn_inventaire)
+
+        self.layoutPrincipal.addLayout(self.layoutView)
+        self.layoutPrincipal.addLayout(self.layoutButtons)
+
+if __name__ == "__main__":
+    app = QApplication([])
+    win = MyWindow()
+    win.show()
+    win.resize(800, 700)
+    app.exec()
