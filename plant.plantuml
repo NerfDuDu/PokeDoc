@@ -1,0 +1,71 @@
+@startuml
+class QMainWindow {
+}
+
+class MyWindow {
+    - page_index: int
+    - total_pages: int
+    + menu()
+    + inventaire()
+    + page_suivante()
+    + page_precedente()
+}
+
+class MENUS {
+    - layoutPrincipal: QVBoxLayout
+    - layoutView: QHBoxLayout
+    - view: QGraphicsView
+    - layoutButtons: QHBoxLayout
+    - btn_inventaire: QPushButton
+    - btn_ouvrir: QPushButton
+    + __init__()
+}
+
+class SAKA_DHO {
+    - page_index: int
+    - total_pages: int
+    - pokedex: list
+    - layoutsakado: QVBoxLayout
+    - barre: QLineEdit
+    - vue: QWidget
+    - gridlayout: QGridLayout
+    - network_manager: QNetworkAccessManager
+    - menu: QWidget
+    - layoutButtons: QHBoxLayout
+    - btn_prec: QPushButton
+    - btn_menu: QPushButton
+    - btn_suiv: QPushButton
+    + __init__(page_index, total_pages)
+    + afficher_pokemons(pokemons=None)
+    + charger_image(reponse, label)
+    + rechercher_pokemon()
+}
+
+class Scene {
+    - index: int
+    - fond: QGraphicsRectItem
+    - contenu: list
+    - manager: QNetworkAccessManager
+    - pixmap_item: QGraphicsPixmapItem
+    + __init__(index, parent=None)
+    + get_image()
+    + get_type()
+    + get_nom()
+    + ajoute(url)
+    + chargement_fini(reponse)
+}
+
+class QApplication {
+}
+
+QMainWindow <|-- MyWindow
+QWidget <|-- MENUS
+QWidget <|-- SAKA_DHO
+QGraphicsScene <|-- Scene
+
+MyWindow --> MENUS
+MyWindow --> SAKA_DHO
+SAKA_DHO --> QNetworkAccessManager
+Scene --> QNetworkAccessManager
+
+@enduml
