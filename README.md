@@ -58,7 +58,6 @@ python main.py
 
 ```
 📂 PokeDoc      
-│── 📂 font                # Police d'écriture
 │── 📂 img                 # Icônes et images
 │── 📂 json                # Fichiers JSON (Pokedex)
 │── 📂 UML                 # Diagramme de classe
