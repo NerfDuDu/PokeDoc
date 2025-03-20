@@ -1,0 +1,58 @@
+@startuml plantuml
+
+class Scene {
+   index: int
+   fond: QGraphicsRectItem
+   contenu: dict
+   manager: QNetworkAccessManager
+   pixmap_item: QGraphicsPixmapItem
+  + __init__(index: int, parent: QWidget)
+  + get_image()
+  + get_type()
+  + get_nom()
+  + ajoute(url: str)
+  + chargement_fini(reponse: QNetworkReply)
+}
+
+class MyWindow {
+   page_index: int
+   total_pages: int
+  + __init__()
+  + menu()
+  + inventaire()
+  + page_suivante()
+  + page_precedente()
+}
+
+class SAKA_DHO {
+   page_index: int
+   total_pages: int
+   pokedex: dict
+   layoutsakado: QVBoxLayout
+   barre: QLineEdit
+   vue: QWidget
+   gridlayout: QGridLayout
+   network_manager: QNetworkAccessManager
+  + __init__(page_index: int, total_pages: int)
+  + afficher_pokemons(pokemons: List[dict])
+  + charger_image(reponse: QNetworkReply, label: QLabel)
+  + rechercher_pokemon()
+}
+
+class MENUS {
+   layoutPrincipal: QVBoxLayout
+   layoutView: QHBoxLayout
+   view: QGraphicsView
+   layoutButtons: QHBoxLayout
+   btn_inventaire: QPushButton
+   btn_ouvrir: QPushButton
+  + __init__()
+}
+
+Scene -- MyWindow : utilise
+MyWindow -- SAKA_DHO : utilise
+SAKA_DHO -- MENUS : utilise
+MENUS -- QGraphicsView : contient
+MENUS -- QPushButton : contient
+
+@enduml
