@@ -1,3 +1,8 @@
+setup(
+    name="PokeDoc",
+    version="1.0",
+    license="LGPL-3.0-or-later",
+  
 import json
 import os
 from PySide6.QtWidgets import (QGraphicsView, QMainWindow, QWidget, QApplication, 
@@ -216,3 +221,4 @@ if __name__ == "__main__":
     win.show()
     win.resize(800, 700)
     app.exec()
+)
