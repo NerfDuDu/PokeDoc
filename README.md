@@ -98,6 +98,7 @@ python main.py
 
 
 **Tâches** : Je me suis occupé de la disposition des différentes scènes et images dans l'inventaire, de l'affichage des Pokémon, ainsi que de l'implémentation des boutons permettant la navigation entre les différentes pages. J'ai également contribué à la liaison de la base de données au <span style="color:orange"> **Main**</span>, en veillant à assurer une synchronisation fluide des données et une récupération efficace des informations stockées.
+![image](https://github.com/user-attachments/assets/c98b6212-0c54-4e8c-a406-2a2785e4dc2a)
 
 
 ## Licence
