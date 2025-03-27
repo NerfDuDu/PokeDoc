@@ -1,5 +1,7 @@
 @startuml plantuml
-
+class QWidget {}
+class QMainWindow{}
+class QGraphicsScene{}
 class Scene {
    index: int
    fond: QGraphicsRectItem
@@ -52,6 +54,9 @@ class MENUS {
 Scene <-- MyWindow : contient
 MyWindow --> SAKA_DHO : utilise
 MyWindow --> MENUS : contient
-
+MyWindow --> QMainWindow : utilise
+Scene --> QGraphicsScene : utilise
+SAKA_DHO --> QWidget : utilise
+MENUS --> QWidget :utilise
 
 @enduml
