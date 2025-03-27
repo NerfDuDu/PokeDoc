@@ -49,10 +49,9 @@ class MENUS {
   + __init__()
 }
 
-Scene -- MyWindow : utilise
-MyWindow -- SAKA_DHO : utilise
-SAKA_DHO -- MENUS : utilise
-MENUS -- QGraphicsView : contient
-MENUS -- QPushButton : contient
+Scene <-- MyWindow : utilise
+MyWindow --> SAKA_DHO : utilise
+MyWindow --> MENUS : contient
+
 
 @enduml
