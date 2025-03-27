@@ -153,7 +153,7 @@ class SAKA_DHO(QWidget):
         self.layoutsakado.addWidget(self.page)
 
         self.menu = QWidget()
-        self.menu.setFixedHeight(40)
+        
         self.layoutButtons = QHBoxLayout()
         self.menu.setLayout(self.layoutButtons)
 
@@ -208,12 +208,17 @@ class SAKA_DHO(QWidget):
 
     @Slot(QNetworkReply, QLabel)
     def charger_image(self, reponse: QNetworkReply, label: QLabel):
-        if reponse.error() == QNetworkReply.NoError:
+        if reponse.error() == QNetworkReply.NoError: #vérifie si la réponse réseau ne contient pas d'erreur, puis charge les données de limage
             image = QImage()
             image.loadFromData(reponse.readAll())
             pixmap = QPixmap.fromImage(image).scaled(100, 100, Qt.KeepAspectRatio)
             label.setPixmap(pixmap)
         reponse.deleteLater()
+        """
+        Remarque:
+            - Si une erreur est détectée dans la réponse réseau, l'image ne sera pas chargée.
+            - La méthode appelle `deleteLater()` sur l'objet `reponse` pour libérer les ressources.
+        """
 
     @Slot()
     def rechercher_pokemon(self):
