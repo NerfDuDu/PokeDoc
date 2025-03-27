@@ -49,7 +49,7 @@ class MENUS {
   + __init__()
 }
 
-Scene <-- MyWindow : utilise
+Scene <-- MyWindow : contient
 MyWindow --> SAKA_DHO : utilise
 MyWindow --> MENUS : contient
 
