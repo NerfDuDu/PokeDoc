@@ -15,10 +15,6 @@ class Scene(QGraphicsScene):
         self.fond = QGraphicsRectItem(0, 0, 0, 0)
         self.addItem(self.fond)
 
-        # Charger le JSON une seule fois
-        with open(os.path.join('pokedex.json'), encoding="utf8") as f:
-            self.contenu = json.load(f)
-
         # Si un Pokémon aléatoire est fourni, l'ajouter à la scène
         if random_pokemon:
             self.ajoute_pokemon_aleatoire(random_pokemon)
@@ -27,13 +23,13 @@ class Scene(QGraphicsScene):
         self.ajoute(self.get_image())
 
     def get_image(self):
-        return self.contenu[self.index]["image"]["thumbnail"]
+        return self.pokedex[self.index]["image"]["thumbnail"]
     
     def get_type(self):
-        return self.contenu[self.index]["type"][0]
+        return self.pokedex[self.index]["type"][0]
     
     def get_nom(self):
-        return self.contenu[self.index]["name"]["french"]
+        return self.pokedex[self.index]["name"]["french"]
     
     def ajoute(self, url: str):
         self.manager = QNetworkAccessManager(self)
