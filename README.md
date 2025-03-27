@@ -59,13 +59,13 @@ python main.py
 ```
 📂 PokeDoc      
 │── 📂 image                 # Icônes et images
-│── 📂 json                # Fichiers JSON (Pokedex)
 │── 📂 UML                 # Diagramme de classe
 │── 📜 LICENSE             # Fichier de la LICENSE utilisé
-│── 📜 README.md           # Documentation      
+│── 📜 README.md           # Documentation
+│── 📜 json                # Fichiers JSON (Pokedex)
 │── 📜 main.py             # Fichier Python principal
 │── 📜 requirements.txt    # Dépendances obligatoires
-|── 📜 COPYING.LESSER      # Copie complète de la licence LGPL v3 
+|── 📜 COPYING.LESSER      # Copie complète de la licence LGPL v3
 ```
 
 
